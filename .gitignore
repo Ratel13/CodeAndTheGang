@@ -16,3 +16,6 @@ build/
 
 # Local properties
 local.properties
+
+# Environments files
+Environments/
