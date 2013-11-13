@@ -1,0 +1,18 @@
+# Generated files
+obj/
+bin/
+
+# Compiled files
+*.o
+*.class
+
+# Personnal files
+build_native.sh
+.project
+
+# Gradle files
+.gradle/
+build/
+
+# Local properties
+local.properties
