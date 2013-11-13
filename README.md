@@ -44,6 +44,10 @@ Add these lines into the `<projectDescription>...</projectDescription>` tag
 
 Do not forget to change the associated `<location>...</location>` tag corresponding to your project and your cocos2d-x path
 
+### Compile
++ Run the `build_native.sh` previously copied (only needed the first time)
++ Finaly, import the project into the Eclipse (from [Android ADT Bundle](http://developer.android.com/sdk/index.html)) and build it
+
 ## Create a new project from scratch with cocos2d-x
 
 ### Download needed components
