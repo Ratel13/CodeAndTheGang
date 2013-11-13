@@ -27,7 +27,7 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
 + Change the value of the `COCOS2DX_ROOT` variable to your cocos2d-x installation dir
 
 ###### Change `.project`
-+ Add these lines into the `<projectDescription>...</projectDescription>` tag
+Add these lines into the `<projectDescription>...</projectDescription>` tag
 
     <linkedResources>
         <link>
@@ -42,7 +42,7 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
         </link>
     </linkedResources>
 
-+ Do not forget to change the associated `<location>...</location>` tag corresponding to your project and your cocos2d-x path
+Do not forget to change the associated `<location>...</location>` tag corresponding to your project and your cocos2d-x path
 
 ## Create a new project from scratch with cocos2d-x
 
