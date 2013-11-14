@@ -48,6 +48,16 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
 + Refresh your project (Riglt Click > Refresh)
 + Build your project
 
+### Potential problem (Windows / on build)
+###### Error message
+"make: *** Android NDK: Aborting. . Stop" 
+or 
+"build-binary.mk:386: *** target pattern contains no '%'. Stop."
+###### Origin
+The program `make.exe` of Cygwin is outdated. This can occur with the Cygwin installer.
+###### Solution
+to get the latest version of the `make.exe`, download the program at http://geant4.cern.ch/support/extras/cygwin/make.exe and paste it into your Cygwin folder (`/cygdrive/c/cygwin64/bin/make.exe` or equivalent).
+
 ## Create a new project from scratch with cocos2d-x
 
 ### Download needed components
