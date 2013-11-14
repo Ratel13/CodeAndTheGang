@@ -19,3 +19,7 @@ local.properties
 
 # Environments files
 Environments/
+
+# Android
+BuildConfig.java
+R.java
