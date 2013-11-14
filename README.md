@@ -34,9 +34,9 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
 + Change the value of the `NDK_ROOT` variable to your Android NDK path
 + Change the value of the `COCOS2DX_ROOT` variable to your cocos2d-x installation dir
 
-** If you are under Windows, use `/cygdrive/c/` instead of `C:/` **
+**If you are under Windows, use `/cygdrive/c/` instead of `C:/`**
 
-** For example : `NDK_ROOT="/cygdrive/c/android/ndk" ` **
+**For example : `NDK_ROOT="/cygdrive/c/android/ndk"`**
 
 ###### Replace `.project`
 + Copy this `example.project` file in your `proj.android` folder and rename it into `.project`
