@@ -1,5 +1,5 @@
-APPNAME="samplecocos2dxandroid"
-APP_ANDROID_NAME="com.samplecocos2dxandroid"
+APPNAME="Practice"
+APP_ANDROID_NAME="practice"
 
 if [ -z "${SDK_ROOT+aaa}" ]; then
 # ... if SDK_ROOT is not set, use "$HOME/bin/android-sdk"
