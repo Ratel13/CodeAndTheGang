@@ -18,6 +18,14 @@ To create a new cocos2d-x project for Android, you can simply copy this [base pr
 ### Prerequisites
 Once you have downloaded some cocos2d-x project from this repository, you will have to tune it a bit to compile the sources on your devices.
 
+###### Windows users : Install cygwin
++ Download [Cygwin](http://cygwin.com/install.html)
++ Install cygwin adding the  `make` component
++ Add cygwin bin dir (`C:\cygwin64\bin\`) to your path
++ Add `GNUMAKE` environment variable on windows and set it to `/cygdrive/c/cygwin64/bin/make.exe` or equivalent
+
+###### Import your android project
+In Eclipse (from [Android ADT Bundle](http://developer.android.com/sdk/index.html)), use `File > new > Android > Android Project from Existing Code` option
 
 ###### Add `build_native.sh`
 Add a `build_native.sh` file to your `proj.android` folder. An example file is provided in the [prerequisites folder](https://github.com/Drusy/CodeAndTheGang/tree/master/Prerequisites) of the git repository.
@@ -26,27 +34,19 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
 + Change the value of the `NDK_ROOT` variable to your Android NDK path
 + Change the value of the `COCOS2DX_ROOT` variable to your cocos2d-x installation dir
 
-###### Change `.project`
-Add these lines into the `<projectDescription>...</projectDescription>` tag
+** If you are under Windows, use `/cygdrive/c/` instead of `C:/` **
 
-    <linkedResources>
-        <link>
-            <name>Classes</name>
-            <type>2</type>
-            <location>/Users/drusy/Dropbox/Stockage_de_masse/cocos2d/CodeAndTheGang/Practice/Classes</location>
-        </link>
-        <link>
-            <name>cocos2dx</name>
-            <type>2</type>
-            <location>/Users/drusy/cocos2d-x-2.2/cocos2dx/platform/android/java/src</location>
-        </link>
-    </linkedResources>
+** For example : `NDK_ROOT="/cygdrive/c/android/ndk" ` **
 
-Do not forget to change the associated `<location>...</location>` tag corresponding to your project and your cocos2d-x path
+###### Replace `.project`
++ Copy this `example.project` file in your `proj.android` folder and rename it into `.project`
++ Change the `<name>....</name>` tag at the top of the file to fit your project name
++ Change the associated `<location>...</location>` tags at the bottom of the file corresponding to your project and your cocos2d-x path
 
 ### Compile
-+ Run the `build_native.sh` previously copied (only needed the first time)
-+ Finaly, import the project into the Eclipse (from [Android ADT Bundle](http://developer.android.com/sdk/index.html)) and build it
++ Clean your project (Project > Clean...)
++ Refresh your project (Riglt Click > Refresh)
++ Build your project
 
 ## Create a new project from scratch with cocos2d-x
 
