@@ -43,26 +43,14 @@ Add a `build_native.sh` file to your `proj.android` folder. An example file is p
 + Change the `<name>....</name>` tag at the top of the file to fit your project name
 + Change the associated `<location>...</location>` tags at the bottom of the file corresponding to your project and your cocos2d-x path
 
+###### Change gdb.setup (in `proj.android/libs/armeabi/gdb.setup`)
++ Replace all `/Users/drusy/adt-bundle-mac-x86_64/ndk` to your Android NDK path
++ and all `/Users/drusy/cocos2d-x-2.2` to your cocos2d-x installation dir
+
 ### Compile
 + Clean your project (Project > Clean...)
 + Refresh your project (Riglt Click > Refresh)
 + Build your project
-
-### Potential problem (Windows / on build)
-###### Error message
-
-	make: *** Android NDK: Aborting. . Stop
-	
-or
-
-	build-binary.mk:386: *** target pattern contains no '%'. Stop.
-	
-
-###### Origin
-The program `make.exe` of Cygwin is outdated. This can occur with the Cygwin installer.
-###### Solution
-+ Get the latest version of the `make.exe` at http://geant4.cern.ch/support/extras/cygwin/make.exe
-+ Paste it into your Cygwin folder (`/cygdrive/c/cygwin64/bin/make.exe` or equivalent).
 
 ## Create a new project from scratch with cocos2d-x
 
