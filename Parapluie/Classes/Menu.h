@@ -12,6 +12,9 @@ class Menu : public cocos2d::CCLayer
 private:
 	/// On garde en mémoire l'appDelegate qui permet de jouer avec les scenes.
 	AppDelegate *_appDelegate;
+	/// Menu
+	CCMenuItemFont *_playItem;
+	CCMenuItemFont *_closeItem;
     
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
@@ -24,9 +27,11 @@ public:
 
     // implement the "static node()" method manually
     CREATE_FUNC(Menu);
+
+	void menuCallback(CCObject* sender);
     
     /// Méthode appelé à la fin de la séquence.
-    void endScene();
+    void endScene(int raise = -2);
 };
 
 #endif // __Menu_H__

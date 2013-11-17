@@ -12,7 +12,7 @@ CCScene* Intro::scene(AppDelegate *appDelegate)
     Intro *layer = Intro::create();
 	layer->setAppDelegate(appDelegate);
     CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-	CCLabelTTF* labelName = CCLabelTTF::create("IntoScene", "Arial", 24);
+	CCLabelTTF* labelName = CCLabelTTF::create("IntoScene", "Arial", 30 * ((int)winSize.height/720.0f));
 	labelName->setPosition(ccp(winSize.width*0.9f, winSize.height*0.05f));
 	layer->addChild(labelName);
 

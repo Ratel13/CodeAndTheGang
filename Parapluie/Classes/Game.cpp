@@ -15,7 +15,7 @@ CCScene* Game::scene(AppDelegate *appDelegate)
     Game *layer = Game::create();
 	layer->setAppDelegate(appDelegate);
     CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-	CCLabelTTF* labelName = CCLabelTTF::create("GameScene", "Arial", 24);
+	CCLabelTTF* labelName = CCLabelTTF::create("GameScene", "Arial", 30 * ((int)winSize.height/720.0f));
 	labelName->setPosition(ccp(winSize.width*0.9f, winSize.height*0.05f));
 	layer->addChild(labelName);
 
@@ -42,6 +42,9 @@ bool Game::init()
 	_nextEnemisSpawn = 0.0f;
 	_life = 5;
 	_vitesseEnemi = 5.0;
+	_labelPoints = NULL;
+	_points = 0;
+	_explosionsIndex = 0;
 
     /// On active l'accelerometre, le click et l'appel à update.
     this->setAccelerometerEnabled(true);
@@ -64,7 +67,7 @@ bool Game::init()
 	_spriteRyu->setScale(_scaleSprite);
 	this->addChild(_spriteRyu);
 
-	char str[15] = {0};
+	char str[20] = {0};
 	
 	/// Animation de base.
 	_animationBase = CCAnimation::create();
@@ -79,11 +82,8 @@ bool Game::init()
 	_animationBase->setDelayPerUnit(.1f);
 	_animationBase->setRestoreOriginalFrame(true);
 
-	_actionBase = CCAnimate::create(_animationBase);
-	_actionBase->retain();
-
 	/// Animation de tir;
-	CCAnimation *_animationShoot = CCAnimation::create();
+	_animationShoot = CCAnimation::create();
 	_animationShoot->retain();
  
 	for (int i = 1; i < 5; i++)
@@ -93,18 +93,6 @@ bool Game::init()
 	}
 
 	_animationShoot->setDelayPerUnit(.1f);
-
-	_actionShoot = CCAnimate::create(_animationShoot);
-	_actionShoot->retain();
-
-	/// On lance l'animation de base
-	_spriteRyu->runAction(CCRepeatForever::create(_actionBase));
-	
-	labelName = NULL;
-    
-	/// On préload le son et on joue le background.
-	//SimpleAudioEngine::sharedEngine()->playBackgroundMusic(".wav", true); 
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("explosion_large.wav");
 
 	/// Animation du projectile.
 	_animationProj = CCAnimation::create();
@@ -116,12 +104,22 @@ bool Game::init()
 	_animationProj->setDelayPerUnit(.1f);
 	_animationProj->setRestoreOriginalFrame(true);
 
-	_actionProj = CCAnimate::create(_animationProj);
-	_actionProj->retain();
+	/// Animation du explosion.
+	_animationExplosion = CCAnimation::create();
+	_animationExplosion->retain();
+
+	for (int i = 1; i < 6; i++)
+	{
+		sprintf(str, "explosion%d.png", i);
+		_animationExplosion->addSpriteFrameWithFileName(str);  
+	}
+	_animationExplosion->addSpriteFrameWithFileName("emptyPix.png");
+
+	_animationExplosion->setDelayPerUnit(.1f);
 
 	/// On remplit les pool.
     _enemis = new CCArray();
-    for(int i = 0; i < 20; ++i) 
+    for(int i = 0; i < 10; ++i) 
 	{
 		CCSprite *enemi = CCSprite::create("chaliezu.png");
 		enemi->setScale(_scaleSprite);
@@ -139,13 +137,23 @@ bool Game::init()
         this->addChild(proj);
 		_projections->addObject(proj);
     }
+    
+	_explosions = new CCArray();
+    for(int i = 0; i < 10; ++i) 
+	{
+        CCSprite *explo = CCSprite::create("explosion1.png");
+		explo->setScale(_scaleSprite);
+        explo->setVisible(false);
+        this->addChild(explo);
+		_explosions->addObject(explo);
+    }
 
 	/// On dessine les vies
 	_lifeSprites = new CCArray();
 	int posX = 5;
 	float posY = winSize.height - 5;
 
-	for(int i = 0 ; i < _life ; ++i)
+	for(unsigned i = 0 ; i < _life ; ++i)
 	{
 		CCSprite *lifeSprite = CCSprite::create("life.png");
 		float width = lifeSprite->getContentSize().width * _scaleSprite;
@@ -156,6 +164,19 @@ bool Game::init()
 		_lifeSprites->addObject(lifeSprite);
 		posX = posX + width;
 	}
+
+	/// On ajoute le label pour les points.
+	_labelPoints = CCLabelTTF::create();
+	_labelPoints->setPosition(ccp(winSize.width * 0.9f, ((CCSprite *)_lifeSprites->objectAtIndex(0))->getPositionY()));
+	this->addChild(_labelPoints);
+
+	/// On lance l'animation de base
+	_spriteRyu->runAction(CCRepeatForever::create(CCAnimate::create(_animationBase)));
+    
+	/// On préload le son et on joue le background.
+	//SimpleAudioEngine::sharedEngine()->playBackgroundMusic(".wav", true); 
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("hadouken.wav");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("explosion.wav");
 
     this->setTouchEnabled(true);
 
@@ -196,7 +217,7 @@ void Game::update(float dt)
 
 	///---------------- Update Player Position ------------------///
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-    float maxY = winSize.height - _spriteRyu->getContentSize().height/2;
+    float maxY = winSize.height * 0.85f /*- _spriteRyu->getContentSize().height/2*/;
     float minY = _spriteRyu->getContentSize().height/2;
     float newY = _spriteRyu->getPosition().y + _accelerationPerSecY * dt;
     newY = MIN(MAX(newY, minY), maxY);
@@ -219,10 +240,25 @@ void Game::update(float dt)
 			projectionSprite = ((CCSprite *) projection);
             if (!projectionSprite->isVisible())
                 continue;
-            if (projectionSprite->boundingBox().intersectsRect(enemySprite->boundingBox()) ) 
+			if(projectionSprite->getPositionX() > winSize.width)
 			{
+				projectionSprite->setVisible(false);
+			}
+			else if (projectionSprite->boundingBox().intersectsRect(enemySprite->boundingBox()) ) 
+			{
+				///------------------- Creating explosion ----------------------///
+				CCSprite *explo = (CCSprite *)_explosions->objectAtIndex(_explosionsIndex);
+				explo->setVisible(true);
+				if (++_explosionsIndex >= _explosions->count())
+					_explosionsIndex = 0;
+				explo->setPosition(enemySprite->getPosition());
+				explo->runAction(CCAnimate::create(_animationExplosion));
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion.wav"); 
+				///------------------- Creating explosion ----------------------///
                 projectionSprite->setVisible(false);
                 enemySprite->setVisible(false);
+				_points += 500;
+				enemySprite->stopAllActions();
                 continue;
             }
         }
@@ -231,7 +267,14 @@ void Game::update(float dt)
 		{
             enemySprite->setVisible(false);
 			removeLife();
-            _spriteRyu->runAction( CCBlink::create(.1f, 1));
+			_spriteRyu->runAction(CCSequence::create(CCFadeOut::create(0.0f),
+													 CCDelayTime::create(0.05f),
+													 CCFadeIn::create(0.0f),
+													 CCDelayTime::create(0.05f),
+													 CCFadeOut::create(0.0f),
+													 CCDelayTime::create(0.05f),
+													 CCFadeIn::create(0.0f),
+													 NULL));
         }
     }
 	///------------------- Collisions test ----------------------///
@@ -247,9 +290,9 @@ void Game::update(float dt)
         float vitesseApparition = _vitesseEnemi / 5.0f;
 		_nextEnemisSpawn = AppDelegate::randomValueBetween(1.0f * vitesseApparition, 2.0f * vitesseApparition) + _startTimeInMillis;
         
-        float randY = AppDelegate::randomValueBetween(0.0,winSize.height);
-        
 		CCSprite *enemy = (CCSprite *)_enemis->objectAtIndex(_enemisIndex);
+        
+		float randY = AppDelegate::randomValueBetween(enemy->getContentSize().height / 2 ,winSize.height * 0.85);
         
 		if (++_enemisIndex >= _enemis->count())
             _enemisIndex = 0;
@@ -262,6 +305,17 @@ void Game::update(float dt)
 											NULL));        
     }
 	///------------------- Creating enemie ----------------------///
+	
+	///------------------- Points gestion -----------------------///
+	_points += dt * 100;
+	char text[20] = {0};
+	CCPoint positionPoints = _labelPoints->getPosition();
+	this->removeChild(_labelPoints);
+	sprintf(text, "%d pts", (int)_points);
+	_labelPoints = CCLabelTTF::create(text, "Arial", 30 * _scaleSprite);
+	_labelPoints->setPosition(positionPoints);
+	this->addChild(_labelPoints);
+	///------------------- Points gestion -----------------------///
 }
 
 void Game::windowsKeyTest()
@@ -278,11 +332,12 @@ void Game::ccTouchesBegan(cocos2d::CCSet* touches, cocos2d::CCEvent* event)
 		_spriteRyu->stopAllActions();
 		
 		/// Animation de tir.
-		_spriteRyu->runAction(CCSequence::create(_actionShoot,
+		_spriteRyu->runAction(CCSequence::create(CCFadeIn::create(0),
+												 CCAnimate::create(_animationShoot),
 												 CCCallFunc::create(this, callfunc_selector(Game::endShoot)),
 												 NULL));
 		// cpp with cocos2d-x
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("hadoken.wav");   
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("hadouken.wav");   
 	}
 }
 
@@ -294,7 +349,7 @@ void Game::makeProjectile()
         _projectionsIndex = 0;
 
 	projectile->stopAllActions();
-	projectile->runAction(CCRepeatForever::create(_actionProj));
+	projectile->runAction(CCRepeatForever::create(CCAnimate::create(_animationProj)));
 	projectile->setPosition(ccp(_spriteRyu->getPositionX(), _spriteRyu->getPositionY()));
     projectile->setVisible(true);
 	projectile->runAction(CCSequence::create(CCMoveTo::create(1.5f, ccp(CCDirector::sharedDirector()->getWinSize().width + projectile->getContentSize().width, _spriteRyu->getPositionY())),
@@ -325,7 +380,7 @@ void Game::endShoot()
 {
 	/// On remet l'action de base.
 	_spriteRyu->stopAllActions();
-	_spriteRyu->runAction(CCRepeatForever::create(_actionBase));
+	_spriteRyu->runAction(CCRepeatForever::create(CCAnimate::create(_animationBase)));
 
 	_shoot = false;
 

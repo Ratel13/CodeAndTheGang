@@ -18,32 +18,34 @@ private:
 	CCSprite *_spriteRyu;
 	///  Animation lors du shoot
 	CCAnimation *_animationShoot;
-	CCAnimate *_actionShoot;
 	/// Animation de base de ryu
 	CCAnimation *_animationBase;
-	CCAnimate *_actionBase;
 	/// Data accelerometre
 	float _accelerationPerSecY;
 	/// true is shooting
 	bool _shoot;
 	/// Projections
 	CCArray* _projections;
-	int _projectionsIndex;
+	unsigned _projectionsIndex;
 	/// Enemis
 	CCArray* _enemis;
-	int _enemisIndex;
+	unsigned _enemisIndex;
 	double _vitesseEnemi;
+	/// Animation explosion.
+	CCArray* _explosions;
+	unsigned _explosionsIndex;
+	CCAnimation *_animationExplosion;
 	/// Gestion spawn
 	float _startTimeInMillis;
     float _nextEnemisSpawn;
 	/// Animation du projectile.
 	CCAnimation *_animationProj;
-	CCAnimate *_actionProj;
 	/// Gestion vie.
-	int _life;
+	unsigned _life;
 	CCArray* _lifeSprites;
-
-	CCLabelTTF *labelName;
+	/// Gestion des points.
+	CCLabelTTF *_labelPoints;
+	float _points;
     
     // scheduled Update
     void update(float dt);
