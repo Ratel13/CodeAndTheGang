@@ -19,6 +19,9 @@ local.properties
 
 # Environments files
 Environments/
+assets/
+armeabi/
+.prefs
 
 # Android
 BuildConfig.java
