@@ -101,8 +101,6 @@ public:
 	// HACK
 	// CORE HACK - TRY TO REMOVE
     bool spaceBarDown, upArrowKeyDown, downArrowKeyDown, leftArrowKeyDown, rightArrowKeyDown, zKeyDown, xKeyDown, iKeyDown, shiftKeyDown;
-	WPARAM lastKeyPress;
-	bool keypress;
     // CORE HACK - TRY TO REMOVE
 
     /**

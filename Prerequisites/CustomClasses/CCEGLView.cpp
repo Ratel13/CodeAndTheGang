@@ -465,7 +465,6 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
             (*m_lpfnAccelerometerKeyHook)( message,wParam,lParam );
         }
 		// HACK
-		CCDirector::sharedDirector()->lastKeyPress = wParam;
 		switch (wParam) {
 			case VK_UP: CCDirector::sharedDirector()->upArrowKeyDown = true; break;
 			case VK_DOWN: CCDirector::sharedDirector()->downArrowKeyDown = true; break;

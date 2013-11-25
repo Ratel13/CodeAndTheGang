@@ -111,7 +111,6 @@ bool CCDirector::init(void)
 	
 	// CORE HACK - TRY TO REMOVE
     spaceBarDown = upArrowKeyDown = downArrowKeyDown = leftArrowKeyDown = rightArrowKeyDown = zKeyDown = xKeyDown = shiftKeyDown = iKeyDown = false;
-	lastKeyPress = 0x0;
     // CORE HACK - TRY TO REMOVE
 
     // scenes
@@ -1100,4 +1099,3 @@ void CCDisplayLinkDirector::setAnimationInterval(double dValue)
 }
 
 NS_CC_END
-
